@@ -1,0 +1,8 @@
+/.env
+/.vscode
+/backend
+/compose.yaml
+/create-paseto-keys.mjs
+/data
+/db
+/frontend
