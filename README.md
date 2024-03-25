@@ -47,8 +47,11 @@ Coloquei o [NextUI](https://nextui.org/) para facilitar a criação de component
 Abrindo o terminal na pasta raiz, o comando abaixo irá subir os 3 serviços.
 
 ```bash
-docker-compose up
+docker-compose up -d --build
 ```
 
 Após a subida apenas acessar no browser `http://localhost:5000`
 
+![compose running](/assets/compose.png)
+
+![auth page](/assets/auth-page.png)
