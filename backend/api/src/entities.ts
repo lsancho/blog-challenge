@@ -2,9 +2,7 @@ import nano from 'nanoid'
 import { Type as T, type Static } from '@sinclair/typebox'
 import { TypeCompiler } from '@sinclair/typebox/compiler'
 
-export const ClaimsSchema = T.Composite([T.Record(T.String(), T.Any())])
-
-export type Claims = Static<typeof ClaimsSchema>
+export const ClaimsSchema = T.Record(T.String(), T.Union([T.String(), T.Number(), T.Boolean()]))
 
 export const UserSchema = T.Object({
   id: T.String(),

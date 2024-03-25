@@ -3,8 +3,8 @@ import { Type as T, type Static } from '@sinclair/typebox'
 import { FastifyReply, FastifyRequest, HookHandlerDoneFunction } from 'fastify'
 import crypto from 'node:crypto'
 import { errors as P, V4 } from 'paseto'
-import { User, generatePublicId } from '~/entities'
-import { ApiError, AuthError, ClaimsSchema, ClaimsSchemaCompiled, HeadersSchema } from './types'
+import { ClaimsSchema, User, generatePublicId } from '~/entities'
+import { ApiError, AuthError, Claims, ClaimsSchemaCompiled, HeadersSchema } from './types'
 
 const signOptions = T.Object({
   privateKey: T.String(),
@@ -65,6 +65,11 @@ const MessageResSchema = T.Object({
   message: T.String()
 })
 
+const MeResSchema = T.Object({
+  claims: ClaimsSchema
+})
+type MeResponse = Static<typeof MeResSchema>
+
 const SignInResSchema = T.Object({
   token: T.String(),
   claims: ClaimsSchema
@@ -73,37 +78,43 @@ type SignInResponse = Static<typeof SignInResSchema>
 
 const getToken = (header: string) => header.slice(7)
 
-export default (): FastifyPluginAsyncTypebox => async (fastify) => {
-  fastify.decorate('verifyPasetoToken', async (req: FastifyRequest, reply: FastifyReply, done: HookHandlerDoneFunction) => {
-    const token = getToken(req.headers.authorization!)
-    if (!token) throw new AuthError('unauthorized')
+export async function verifyPasetoToken(req: FastifyRequest, reply: FastifyReply, done: HookHandlerDoneFunction) {
+  const fastify = req.server
 
-    const claims = await verify({
-      token,
-      publicKey: fastify.config.get('paseto.keys.public')
-    })
+  req.log.trace('verifyPasetoToken', req.routerPath)
 
-    if (!req.user) {
-      const client = await fastify.pg.connect()
-      try {
-        const { rows } = await client.query<User>(
-          'SELECT public_id as id, name, email, password, claims, created_at FROM blog.user WHERE public_id = $1',
-          [claims.sub]
-        )
+  const token = getToken(req.headers.authorization!)
+  if (!token) throw new AuthError('unauthorized')
 
-        const user = rows[0]
-        if (!user) throw new AuthError('unauthorized')
-
-        // fastify.decorateRequest('user', user)
-        req.user = user
-      } finally {
-        client.release()
-      }
-    }
-
-    if (req.user && req.user.id !== claims.sub) throw new AuthError('forbidden')
+  req.log.trace('token', token)
+  const claims = await verify({
+    token,
+    publicKey: fastify.config.get('paseto.keys.public')
   })
 
+  if (!req.user) {
+    const client = await fastify.pg.connect()
+    try {
+      const { rows } = await client.query<User>(
+        'SELECT public_id as id, name, email, password, claims, created_at FROM blog.user WHERE public_id = $1',
+        [claims.sub]
+      )
+
+      const user = rows[0]
+      if (!user) throw new AuthError('unauthorized')
+
+      // fastify.decorateRequest('user', user)
+      req.user = user
+      req.claims = claims
+    } finally {
+      client.release()
+    }
+  }
+
+  if (req.user && req.user.id !== claims.sub) throw new AuthError('forbidden')
+}
+
+export default (): FastifyPluginAsyncTypebox => async (fastify) => {
   fastify.post<{
     Body: SignUpRequest
     Reply: SignUpResponse
@@ -210,19 +221,23 @@ export default (): FastifyPluginAsyncTypebox => async (fastify) => {
     }
   )
 
-  fastify.get(
-    '/protected',
+  fastify.get<{
+    Reply: MeResponse
+  }>(
+    '/auth/me',
     {
       schema: {
         headers: HeadersSchema,
         response: {
-          '2xx': MessageResSchema
+          '2xx': MeResSchema
         }
       },
       preHandler: fastify.verifyPasetoToken
     },
     async (req, res) => {
-      return res.status(201).send({ message: 'Authorized' })
+      return res.status(201).send({
+        claims: req.claims || {}
+      })
     }
   )
 }
@@ -234,5 +249,6 @@ declare module 'fastify' {
 
   interface FastifyRequest {
     user?: User
+    claims?: Claims
   }
 }

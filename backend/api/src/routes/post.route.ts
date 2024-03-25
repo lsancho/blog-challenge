@@ -1,7 +1,7 @@
 import { FastifyPluginAsyncTypebox } from '@fastify/type-provider-typebox'
 import { Type as T, type Static } from '@sinclair/typebox'
 import { FastifyReply, HookHandlerDoneFunction } from 'fastify'
-import { Post, PostSchema, User, generatePublicId } from '~/entities'
+import { Post, PostSchema, User, UserSchema, generatePublicId } from '~/entities'
 
 const EditPostReqSchema = T.Object({
   id: T.Optional(T.String()),
@@ -28,6 +28,11 @@ type GetPostResponse = Post
 
 const GetPostsResSchema = T.Array(PostSchema)
 type GetPostsResponse = Static<typeof GetPostsResSchema>
+
+const PostReportSchema = T.Composite([T.Partial(PostSchema), T.Object({ user: T.Partial(UserSchema) })])
+type PostReport = Static<typeof PostReportSchema>
+const GetPostReportResSchema = T.Array(PostReportSchema)
+type GetPostReportResponse = Static<typeof GetPostReportResSchema>
 
 export default (): FastifyPluginAsyncTypebox => async (fastify) => {
   fastify.post<{
@@ -154,8 +159,52 @@ export default (): FastifyPluginAsyncTypebox => async (fastify) => {
           order by p.created_at;
         `
         )
+        return res.status(200).send(rows)
+      } finally {
+        client.release()
+      }
+    }
+  )
 
-        console.log(rows)
+  fastify.get<{
+    Reply: GetPostReportResponse
+  }>(
+    '/post/report',
+    {
+      schema: {
+        response: {
+          '2xx': GetPostReportResSchema
+        }
+      },
+      preHandler: fastify.verifyPasetoToken
+    },
+    async (req, res) => {
+      const client = await fastify.pg.connect()
+      try {
+        const { rows } = await client.query<PostReport>(
+          `
+        select 
+          p.public_id as id,
+          title,
+          p.version,
+          views,
+          likes,
+          dislikes,
+          p.created_at,
+          p.updated_at,
+          jsonb_build_object(
+                  'id', u.public_id,
+                  'name', u.name,
+                  'email', u.email
+          )           as "user"
+        from blog.post p
+          left join blog."user" u on p.user_id = u.id
+          left join blog.post_version v
+                    on p.id = v.post_id
+                        and v.version = p.version
+        order by p.created_at
+        `
+        )
         return res.status(200).send(rows)
       } finally {
         client.release()

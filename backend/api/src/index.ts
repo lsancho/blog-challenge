@@ -5,6 +5,7 @@ import Probe from 'arecibo'
 import Fastify from 'fastify'
 import config from './config'
 import Routes from './routes'
+import { verifyPasetoToken } from './routes/auth.route'
 
 const POSTGRES_CONNECTION_STRING = `postgresql://${config.get('postgres.user')}:${config.get('postgres.password')}@${config.get('postgres.host')}:${config.get('postgres.port')}/${config.get('postgres.db')}`
 
@@ -23,6 +24,7 @@ const fastify = Fastify({
 })
   .withTypeProvider<TypeBoxTypeProvider>()
   .decorate('config', config)
+  .decorate('verifyPasetoToken', verifyPasetoToken)
   .setErrorHandler((error, request, reply) => {
     reply.log.error(error)
     reply.status(500).send({ error })

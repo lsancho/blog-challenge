@@ -1,13 +1,12 @@
 import { Type as T, type Static } from '@sinclair/typebox'
 import { TypeCompiler } from '@sinclair/typebox/compiler'
-import { ClaimsSchema as CS } from '~/entities'
+import { ClaimsSchema } from '~/entities'
 
 export type Fastify = import('~/index').Fastify
 export type Config = typeof import('~/config')
 
-export const ClaimsSchema = T.Record(T.String(), T.Union([T.String(), T.Number(), T.Boolean()]))
 export const ClaimsSchemaCompiled = TypeCompiler.Compile(ClaimsSchema)
-type Claims = Static<typeof ClaimsSchema>
+export type Claims = Static<typeof ClaimsSchema>
 
 export const HeadersSchema = T.Object({
   authorization: T.String({ pattern: '^Bearer .+' })
