@@ -27,9 +27,7 @@ const fastify = Fastify({
     reply.log.error(error)
     reply.status(500).send({ error })
   })
-  .register(Cors, {
-    origin: '*'
-  })
+  .register(Cors, {})
   .register(Probe, {
     readinessURL: '/readyz',
     readinessCallback: (req, reply) => reply.send({ message: 'ready' }),

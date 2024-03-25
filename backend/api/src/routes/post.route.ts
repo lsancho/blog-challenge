@@ -111,7 +111,7 @@ export default (): FastifyPluginAsyncTypebox => async (fastify) => {
         )
         const data = rows[0]
 
-        return res.status(201).send(data)
+        return res.status(200).send(data)
       } finally {
         client.release()
       }
@@ -156,7 +156,7 @@ export default (): FastifyPluginAsyncTypebox => async (fastify) => {
         )
 
         console.log(rows)
-        return res.status(201).send(rows)
+        return res.status(200).send(rows)
       } finally {
         client.release()
       }
