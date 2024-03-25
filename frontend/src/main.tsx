@@ -1,0 +1,17 @@
+import { NextUIProvider } from '@nextui-org/react'
+import React from 'react'
+import ReactDOM from 'react-dom/client'
+
+import './index.css'
+import AuthProvider from './lib/auth'
+import Routes from './routes'
+
+ReactDOM.createRoot(document.getElementById('root')!).render(
+  <React.StrictMode>
+    <NextUIProvider>
+      <AuthProvider>
+        <Routes />
+      </AuthProvider>
+    </NextUIProvider>
+  </React.StrictMode>
+)
