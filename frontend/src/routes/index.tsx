@@ -4,6 +4,7 @@ import { ProtectedRoute } from './protected'
 import HomePage, { loader as homeLoader } from './home'
 import ErrorPage from './error'
 import AuthPage from './auth'
+import SingOutPage from './auth/signout'
 import Post from './post'
 
 const Routes = () => {
@@ -35,6 +36,10 @@ const Routes = () => {
       path: '/auth',
       element: <AuthPage />,
       errorElement: <ErrorPage />
+    },
+    {
+      path: '/auth/signout',
+      element: <SingOutPage />
     }
   ]
 

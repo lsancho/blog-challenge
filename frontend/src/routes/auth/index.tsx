@@ -18,6 +18,7 @@ export default function AuthPage() {
   return (
     <main className='flex min-h-screen flex-col items-center justify-between p-24'>
       <div className='flex flex-col'>
+        <h1 className='pb-10 text-4xl font-bold'>Blog</h1>
         <Card className='h-[400px] w-[340px] max-w-full'>
           <CardBody className='overflow-hidden'>
             <Tabs fullWidth size='md' aria-label='Tabs form' selectedKey={selected} onSelectionChange={setSelected}>

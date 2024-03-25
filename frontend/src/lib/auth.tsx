@@ -20,7 +20,7 @@ async function setDataInStorage<T>(token: T) {
   sessionStorage.setItem(DATA_SESSION_KEY, JSON.stringify(token))
 }
 
-async function removeDataOfStorage() {
+export async function removeDataOfStorage() {
   sessionStorage.removeItem(DATA_SESSION_KEY)
 }
 
@@ -61,7 +61,6 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
     }
   }, [data])
 
-  // Memoized value of the authentication context
   const contextValue = useMemo(
     () => ({
       data,
