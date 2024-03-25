@@ -44,7 +44,7 @@ Coloquei o [NextUI](https://nextui.org/) para facilitar a criação de component
 
 ## Como rodar
 
-O comando abaixo irá subir os 3 serviços.
+Abrindo o terminal na pasta raiz, o comando abaixo irá subir os 3 serviços.
 
 ```bash
 docker-compose up
