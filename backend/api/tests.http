@@ -1,0 +1,29 @@
+POST http://localhost:8080/signup
+content-type: application/json
+
+{
+    "name": "admin",
+    "email": "admin@test.com",
+    "password": "admin"
+}
+
+### 
+
+POST http://localhost:8080/signin
+content-type: application/json
+
+{
+    "email": "admin@test.com",
+    "password": "admin"
+}
+
+### 
+
+GET http://localhost:8080/post
+authorization: Bearer v4.public.eyJzdWIiOiI5cGhrcHR3OXl6c2siLCJpYXQiOiIyMDI0LTAzLTI1VDA0OjQ5OjQ2Ljc1OVoiLCJyb2xlIjoidXNlciIsImV4cCI6IjIwMjQtMDMtMjVUMDQ6NTE6NDYuNzU5WiJ9FrgjrfWB6tPmXrZeU0wNfX48EQ9ETB5wWOZxWwE4Nabw8n45IinkdfWDBOvVg9iX2Ot4qLEG_zzFBNeowOMbCg
+
+
+### 
+
+GET http://localhost:8080/post/xxx
+authorization: Bearer v4.public.eyJzdWIiOiI5cGhrcHR3OXl6c2siLCJpYXQiOiIyMDI0LTAzLTI1VDA0OjQ5OjQ2Ljc1OVoiLCJyb2xlIjoidXNlciIsImV4cCI6IjIwMjQtMDMtMjVUMDQ6NTE6NDYuNzU5WiJ9FrgjrfWB6tPmXrZeU0wNfX48EQ9ETB5wWOZxWwE4Nabw8n45IinkdfWDBOvVg9iX2Ot4qLEG_zzFBNeowOMbCg
