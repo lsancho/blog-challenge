@@ -5,7 +5,7 @@ WORKDIR /app
 RUN npm i -g pnpm
 
 FROM base AS dependencies
-COPY package.json pnpm-lock.yaml .npmrc ./
+COPY package.json pnpm-lock.yaml .npmrc .env.production ./
 RUN pnpm install
 
 FROM base AS build
@@ -17,7 +17,7 @@ RUN pnpm prune --prod
 
 FROM base AS deploy
 WORKDIR /app
-COPY --from=dependencies /app/package.json /app/pnpm-lock.yaml /app/.npmrc ./
+COPY --from=dependencies /app/package.json /app/pnpm-lock.yaml /app/.npmrc /app/.env.production ./
 COPY --from=dependencies /app/node_modules ./node_modules
 COPY --from=build /app/dist/ ./dist/
 CMD [ "pnpm", "preview" ]
