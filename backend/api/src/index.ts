@@ -32,9 +32,17 @@ const fastify = Fastify({
   .register(Cors, {})
   .register(Probe, {
     readinessURL: '/readyz',
-    readinessCallback: (req, reply) => reply.send({ message: 'ready' }),
+    readinessCallback: (req, reply) =>
+      reply
+        .status(200)
+        .header('Content-Type', 'application/json')
+        .send(JSON.stringify({ message: 'ready' })),
     livenessURL: '/livez',
-    livenessCallback: (req, reply) => reply.send({ message: 'alive' }),
+    livenessCallback: (req, reply) =>
+      reply
+        .status(200)
+        .header('Content-Type', 'application/json')
+        .send(JSON.stringify({ message: 'live' })),
     logLevel: 'info'
   })
   .register(Postgres, {

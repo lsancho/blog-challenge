@@ -38,4 +38,8 @@ authorization: Bearer v4.public.eyJzdWIiOiJ1ZXQ3OWRtczIwczMiLCJpYXQiOiIyMDI0LTAz
 GET http://localhost:8080/auth/me
 authorization: Bearer v4.public.eyJzdWIiOiJ1ZXQ3OWRtczIwczMiLCJpYXQiOiIyMDI0LTAzLTI1VDE5OjMwOjU2LjIyOFoiLCJyb2xlIjoidXNlciIsImV4cCI6IjIwMjQtMDMtMjVUMTk6MzI6NTYuMjI4WiJ9rZOV_Dp0h9aD6H3GZ46-Q5k8etS_XbaR08QpZ4tIH1yl1DU8-bTF77HA3i8Xq908UFdDqzGjJnpUNUK-6MRPAw
 
+###
+GET http://localhost:8080/livez
 
+###
+GET http://localhost:8080/readyz
