@@ -55,10 +55,6 @@ function Page() {
     }
   }, [setError, error])
 
-  useEffect(() => {
-    console.log('formState', formState)
-  }, [formState])
-
   return (
     <section>
       <Card className='h-full w-[680px] max-w-full'>

@@ -36,7 +36,7 @@ function getDataFromStorage<T>() {
 type AuthData = AuthResponse
 type AuthContextType = {
   data: AuthData | null
-  setToken: (data: AuthData) => Promise<void>
+  setToken: (data: AuthData | null) => Promise<void>
 }
 const AuthContext = createContext<AuthContextType>({
   data: null,
@@ -47,7 +47,7 @@ type AuthProviderProps = { children: React.ReactNode }
 const AuthProvider = ({ children }: AuthProviderProps) => {
   const [data, setData] = useState(getDataFromStorage<AuthData>())
 
-  const save = async (data: AuthData) => {
+  const save = async (data: AuthData | null) => {
     setData(data)
   }
 

@@ -4,14 +4,15 @@ import { Navigate } from 'react-router-dom'
 import { removeDataOfStorage, useAuth } from '~/lib/auth'
 
 export default function AuthSignOutPage() {
-  const { data } = useAuth()
+  const { data, setToken } = useAuth()
 
   useEffect(() => {
     if (data) {
       removeDataOfStorage()
       delete axios.defaults.headers.common['Authorization']
+      setToken(null)
     }
-  }, [data])
+  }, [data, setToken])
 
   if (!data) {
     return <Navigate to='/' />

@@ -1,7 +1,7 @@
-import { Card, CardBody, CardHeader } from '@nextui-org/react'
+import { Card, CardBody } from '@nextui-org/react'
 import axios from 'axios'
 import { Link } from 'react-router-dom'
-import { useLoaderData, makeLoader, LoaderFunction } from 'react-router-typesafe'
+import { useLoaderData } from 'react-router-typesafe'
 
 type Post = {
   version: number
@@ -18,6 +18,8 @@ type Post = {
 }
 
 export async function loader() {
+  if (!axios.defaults.headers.common['Authorization']) return { posts: [] } // not logged in
+
   const API_BASE_URL = import.meta.env.VITE_API_BASE_URL
   const response = await axios.get(API_BASE_URL + '/post')
   const posts = response.data as Post[]
@@ -84,8 +86,6 @@ function Post(props: PostProps) {
 
 function Page() {
   const { posts } = useLoaderData<typeof loader>()
-
-  console.log('posts', posts)
 
   return (
     <section className='flex justify-center'>

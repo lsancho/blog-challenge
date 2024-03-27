@@ -107,7 +107,6 @@ function SingIn(props: SingInProps) {
           isDisabled={isDisabled}
           isLoading={loading}
           onPress={(e) => {
-            console.log('click')
             submitButton.current?.click()
           }}
         >
@@ -139,12 +138,10 @@ function SignUp(props: SignUpProps) {
   const { trigger: singup, loading, error, authenticated } = useSignUp()
 
   const onSubmit = async (data: FormData) => {
-    console.log('onsubmit', data)
     await singup({ name: data.name, email: data.email, password: data.password })
   }
 
   useEffect(() => {
-    console.log('error', error)
     if (error) {
       setError('root.server', { message: 'error' })
     }
@@ -160,12 +157,7 @@ function SignUp(props: SignUpProps) {
   }, [loading])
 
   return (
-    <form
-      className='flex h-[300px] flex-col gap-4'
-      onSubmit={handleSubmit(onSubmit, (e) => {
-        console.log(e)
-      })}
-    >
+    <form className='flex h-[300px] flex-col gap-4' onSubmit={handleSubmit(onSubmit, (e) => {})}>
       <Input
         isRequired
         label='Name'
@@ -206,7 +198,6 @@ function SignUp(props: SignUpProps) {
           isLoading={loading}
           isDisabled={isDisabled}
           onPress={(e) => {
-            console.log('click')
             submitButton.current?.click()
           }}
         >
